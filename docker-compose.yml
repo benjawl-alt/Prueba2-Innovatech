@@ -1,0 +1,36 @@
+services:
+  # Base de Datos (Requisito de persistencia IE2/IE3)
+  database:
+    image: mongo:latest  # Cambiar por mysql si es lo que usas
+    ports:
+      - "27017:27017"
+    volumes:
+      - db_data:/data/db
+
+  # Microservicio Ventas
+  back-ventas:
+    build: ./back-Ventas_SpringBoot/Springboot-API-REST
+    ports:
+      - "8081:8080"
+    depends_on:
+      - database
+
+  # Microservicio Despacho (EL QUE TE FALTABA)
+  back-despacho:
+    build: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
+    ports:
+      - "8082:8080"
+    depends_on:
+      - database
+
+  # Frontend
+  front-despacho:
+    build: ./front_despacho
+    ports:
+      - "80:80"
+    depends_on:
+      - back-ventas
+      - back-despacho
+
+volumes:
+  db_data: # Esto asegura que no se pierdan los datos (Evaluado en IE3)
